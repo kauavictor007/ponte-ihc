@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0;font-size:14px}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Ponte</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Layout: página de apresentação com um aparelho (celular ou totem) no centro; dentro dele, telas com uma ação principal cada */
+:root{
+  --ink:#16252F; --ink-2:#4A5A63; --line:#DCE3E2; --paper:#F3F6F5; --card:#FFFFFF;
+  --urgent:#C2561B; --urgent-soft:#FBE9DD; --future:#22706B; --future-soft:#DDEFEC;
+  --navy:#182A36; --ok:#2E7D4F; --ok-soft:#E1F2E7; --focus:#2F6FE4;
+  --display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --fs:1;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --ink:#E7EEEC; --ink-2:#A7B6B3; --line:#2C3B42; --paper:#0F1A20; --card:#17252C;
+  --urgent:#F08A4B; --urgent-soft:#3A2416; --future:#5BC1B7; --future-soft:#163330;
+  --navy:#0B141A; --ok:#6CCB92; --ok-soft:#173326; --focus:#7FA8FF; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ink:#E7EEEC; --ink-2:#A7B6B3; --line:#2C3B42; --paper:#0F1A20; --card:#17252C;
+  --urgent:#F08A4B; --urgent-soft:#3A2416; --future:#5BC1B7; --future-soft:#163330;
+  --navy:#0B141A; --ok:#6CCB92; --ok-soft:#173326; --focus:#7FA8FF; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.top{max-width:1040px;margin:0 auto 18px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:end;justify-content:space-between}
+.brand{display:flex;flex-direction:column;gap:2px}
+.brand small{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.brand h1{font-family:var(--display);font-weight:800;font-size:30px;margin:0;line-height:1}
+.brand h1 span{color:var(--future)}
+.switch{display:flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px}
+.switch button{border:0;background:none;padding:9px 16px;border-radius:999px;font-weight:700;color:var(--ink-2)}
+.switch button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.stage{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:start}
+.side{display:flex;flex-direction:column;gap:14px;font-size:14px;color:var(--ink-2)}
+.side h2{font-family:var(--display);font-size:17px;color:var(--ink);margin:0}
+.side ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.side .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.side .tag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--future)}
+@media (max-width:860px){.stage{grid-template-columns:minmax(0,1fr)}.side{order:2}}
+
+/* ---------- aparelho ---------- */
+.device{margin:0 auto;background:var(--card);position:relative;overflow:hidden;display:flex;flex-direction:column}
+.device.phone{width:100%;max-width:390px;height:760px;border-radius:36px;border:10px solid #10181D;box-shadow:0 20px 50px -20px rgba(10,30,40,.45)}
+.device.kiosk{width:100%;max-width:720px;min-height:540px;border-radius:18px;border:14px solid #2A363D;box-shadow:0 24px 50px -24px rgba(10,30,40,.5)}
+.kiosk-base{max-width:180px;height:60px;margin:0 auto;background:linear-gradient(#2A363D,#1B2429);clip-path:polygon(30% 0,70% 0,100% 100%,0 100%)}
+@media (max-width:480px){.device.phone{border-width:6px;border-radius:26px;height:720px}.device.kiosk{border-width:8px}}
+.screen{flex:1;overflow-y:auto;display:flex;flex-direction:column;font-size:calc(16px*var(--fs))}
+.bar{display:flex;align-items:center;gap:8px;padding:14px 14px 10px;border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:0;z-index:2}
+.bar h2{flex:1;margin:0;font-family:var(--display);font-size:calc(19px*var(--fs));font-weight:600;min-width:0}
+.icon-btn{border:1px solid var(--line);background:var(--card);border-radius:12px;min-width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 10px;font-weight:700;font-size:14px}
+.icon-btn svg{width:20px;height:20px}
+.body{padding:16px;display:flex;flex-direction:column;gap:14px;flex:1}
+.hint{color:var(--ink-2);margin:0}
+.door{border:0;border-radius:22px;padding:20px;text-align:left;display:flex;gap:16px;align-items:center;min-height:120px}
+.door .ico{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;flex:none;background:rgba(255,255,255,.22)}
+.door .ico svg{width:32px;height:32px}
+.door b{display:block;font-family:var(--display);font-size:calc(23px*var(--fs));line-height:1.1}
+.door span{font-size:calc(14px*var(--fs));opacity:.92}
+.door.urgent{background:var(--urgent);color:#fff}
+.door.future{background:var(--future);color:#fff}
+:root[data-theme="dark"] .door.urgent,:root[data-theme="dark"] .door.future{color:#10181D}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .door.urgent,:root:not([data-theme="light"]) .door.future{color:#10181D}}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.tile{border:2px solid var(--line);background:var(--card);border-radius:18px;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;font-weight:700;font-size:calc(16px*var(--fs));min-height:110px;justify-content:center;text-align:center}
+.tile svg{width:36px;height:36px}
+.tile.u svg{color:var(--urgent)} .tile.f svg{color:var(--future)}
+.tile:hover{border-color:var(--ink-2)}
+.tile small{font-weight:400;color:var(--ink-2);font-size:12px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+.chip{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-weight:700;white-space:nowrap;font-size:14px}
+.chip[aria-pressed="true"]{background:var(--future);border-color:var(--future);color:#fff}
+.lbl{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--ink-2)}
+.card{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--card);display:flex;flex-direction:column;gap:6px;text-align:left;width:100%}
+button.card:hover{border-color:var(--ink-2)}
+.card h3{margin:0;font-size:calc(17px*var(--fs))}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--ink-2);font-size:14px}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--future-soft);color:var(--future)}
+.pill.u{background:var(--urgent-soft);color:var(--urgent)} .pill.ok{background:var(--ok-soft);color:var(--ok)}
+.cta{border:0;border-radius:16px;min-height:58px;padding:14px 18px;font-weight:700;font-size:calc(18px*var(--fs));width:100%;background:var(--future);color:#fff}
+.cta.u{background:var(--urgent)} .cta.ghost{background:transparent;border:2px solid var(--line);color:var(--ink)}
+.cta:disabled{opacity:.4;cursor:not-allowed}
+:root[data-theme="dark"] .cta:not(.ghost),:root[data-theme="dark"] .chip[aria-pressed="true"]{color:#10181D}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cta:not(.ghost),:root:not([data-theme="light"]) .chip[aria-pressed="true"]{color:#10181D}}
+.foot{padding:12px 16px 16px;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);background:var(--card)}
+.nav{display:flex;border-top:1px solid var(--line);background:var(--card)}
+.nav button{flex:1;border:0;background:none;padding:8px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;font-weight:700;color:var(--ink-2)}
+.nav button svg{width:24px;height:24px}
+.nav button[aria-current="true"]{color:var(--future)}
+.badge{background:var(--urgent);color:#fff;border-radius:999px;font-size:11px;padding:0 6px;margin-left:2px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:700}
+.field input{font:inherit;font-size:calc(18px*var(--fs));padding:12px 14px;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);width:100%}
+.field input:focus{border-color:var(--future);outline:none}
+.check{width:84px;height:84px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;margin:8px auto 0}
+.check svg{width:46px;height:46px}
+.center{text-align:center}
+.big{font-family:var(--display);font-size:calc(26px*var(--fs));margin:0;line-height:1.15;text-wrap:balance}
+.map{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);height:300px;background:var(--future-soft)}
+.map svg.streets{position:absolute;inset:0;width:100%;height:100%}
+.pin{position:absolute;transform:translate(-50%,-100%);border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center}
+.pin i{display:block;width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--urgent);border:3px solid var(--card);box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.pin i.closed{background:var(--ink-2)}
+.pin span{margin-top:4px;background:var(--card);border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.me{position:absolute;width:18px;height:18px;border-radius:50%;background:var(--focus);border:3px solid #fff;box-shadow:0 0 0 8px rgba(47,111,228,.2);transform:translate(-50%,-50%)}
+.steps{display:flex;flex-direction:column;gap:0;margin:0;padding:0;list-style:none}
+.steps li{display:flex;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.steps li b{width:28px;height:28px;flex:none;border-radius:50%;background:var(--future-soft);color:var(--future);display:grid;place-items:center;font-size:14px}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--card);width:100%;text-align:left}
+.sw{width:50px;height:30px;border-radius:999px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .2s}
+.toggle[aria-pressed="true"] .sw{background:var(--ok)} .toggle[aria-pressed="true"] .sw::after{left:23px}
+.toast{position:absolute;left:12px;right:12px;bottom:84px;background:var(--navy);color:#fff;border-radius:14px;padding:12px 14px;font-weight:700;display:flex;justify-content:space-between;gap:10px;align-items:center;z-index:9;animation:up .25s ease}
+.toast button{background:none;border:0;color:#9FE0D8;font-weight:700}
+@keyframes up{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* totem */
+.k-bar{display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--navy);color:#fff}
+.k-bar b{font-family:var(--display);font-size:20px;flex:1}
+.k-bar .icon-btn{background:transparent;border-color:rgba(255,255,255,.3);color:#fff}
+.progress{display:flex;gap:6px;padding:12px 18px 0}
+.progress i{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.progress i.on{background:var(--future)}
+.k-body{padding:18px 22px;display:flex;flex-direction:column;gap:16px;flex:1}
+.k-body .big{font-size:calc(28px*var(--fs))}
+.k-foot{display:flex;gap:12px;padding:14px 22px 20px;border-top:1px solid var(--line)}
+.k-foot .cta{flex:1}
+.keys{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.keys button{border:1px solid var(--line);background:var(--paper);border-radius:8px;height:44px;font-weight:700;font-size:16px}
+.keys .wide{grid-column:span 3}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.day{border:2px solid var(--line);background:var(--card);border-radius:12px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;font-size:13px;color:var(--ink-2)}
+.day b{font-size:22px;color:var(--ink);font-variant-numeric:tabular-nums}
+.day[aria-pressed="true"]{border-color:var(--future);background:var(--future-soft)}
+.day:disabled{opacity:.35}
+.opt{border:2px solid var(--line);background:var(--card);border-radius:14px;padding:14px 16px;text-align:left;display:flex;align-items:center;gap:12px;width:100%;font-size:calc(17px*var(--fs))}
+.opt[aria-pressed="true"]{border-color:var(--future);background:var(--future-soft)}
+.opt .dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--ink-2);flex:none;display:grid;place-items:center}
+.opt[aria-pressed="true"] .dot{border-color:var(--future)}
+.opt[aria-pressed="true"] .dot::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--future)}
+.ticket{background:#fff;color:#16252F;border-radius:6px;padding:16px 18px;font-family:"Courier New",monospace;font-size:14px;box-shadow:0 6px 18px rgba(0,0,0,.15);max-width:300px;margin:0 auto;width:100%;border-top:6px dashed #c9d2d0}
+.ticket.printing{animation:print 1.4s ease}
+@keyframes print{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+.ticket hr{border:0;border-top:1px dashed #9aa;margin:8px 0}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.row>*{flex:1;min-width:140px}
+.sumtbl{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:calc(17px*var(--fs))}
+.sumtbl dt{color:var(--ink-2)} .sumtbl dd{margin:0;font-weight:700}
+.note{font-size:12px;color:var(--ink-2);text-align:center;margin-top:10px}
+.switch{flex-wrap:wrap}
+.device.web{width:100%;max-width:720px;min-height:600px;border-radius:14px;border:1px solid var(--line);box-shadow:0 20px 44px -24px rgba(10,30,40,.4)}
+.web-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--paper);border-bottom:1px solid var(--line)}
+.web-bar i{width:11px;height:11px;border-radius:50%;background:var(--line)}
+.web-bar span{flex:1;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-size:13px;color:var(--ink-2);min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.p-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:16px 22px;border-bottom:1px solid var(--line)}
+.p-head .org{flex:1;min-width:0}
+.p-head .org b{display:block;font-family:var(--display);font-size:20px}
+.avatar{width:44px;height:44px;border-radius:12px;background:var(--future-soft);color:var(--future);display:grid;place-items:center;font-weight:800;font-family:var(--display)}
+.field select,.field textarea{font:inherit;font-size:16px;padding:11px 12px;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);width:100%}
+.field textarea{min-height:70px;resize:vertical}
+.err{color:var(--urgent);font-size:13px;font-weight:700}
+.acao{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.acao .info{flex:1;min-width:200px;display:flex;flex-direction:column;gap:4px}
+.small-btn{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;font-weight:700;font-size:14px}
+.stat{display:flex;gap:12px;flex-wrap:wrap}
+.stat div{flex:1;min-width:120px;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.cat4{grid-template-columns:repeat(4,minmax(0,1fr))}@media (max-width:560px){.cat4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat b{display:block;font-family:var(--display);font-size:26px;font-variant-numeric:tabular-nums}
+</style>
+
+<header class="top">
+  <div class="brand"><small>IHC · Mackenzie · Projeto Parte 3</small><h1>Ponte<span>.</span></h1></div>
+  <div class="switch" role="group" aria-label="Canal">
+    <button id="mode-app" aria-pressed="true">Aplicativo (celular)</button>
+    <button id="mode-kiosk" aria-pressed="false">Totem (CRAS / Centro POP)</button>
+    <button id="mode-partner" aria-pressed="false">Parceiro</button>
+  </div>
+</header>
+
+<main class="stage">
+  <div id="device-wrap"></div>
+  <aside class="side" id="side"></aside>
+</main>
+
+<script>
+const ICONS={
+ back:'<path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+ sound:'<path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>',
+ bolt:'<path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" fill="currentColor"/>',
+ sprout:'<path d="M12 21v-9M12 12c0-4 3-7 8-7 0 5-3 7-8 7zM12 14c0-3-2-6-7-6 0 4 2 6 7 6z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+ bag:'<rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M3 12h18" stroke="currentColor" stroke-width="2" fill="none"/>',
+ book:'<path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2V5z" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 19a2 2 0 012-2h13" stroke="currentColor" stroke-width="2" fill="none"/>',
+ money:'<rect x="2" y="6" width="20" height="12" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" fill="none"/>',
+ id:'<rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="9" cy="11" r="2.2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M5.5 16c.7-1.7 2-2.5 3.5-2.5s2.8.8 3.5 2.5M14 10h4M14 13h3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>',
+ food:'<path d="M7 3v8M5 3v5a2 2 0 004 0V3M7 11v10M17 3c-2 2-3 4-3 7h3v11" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+ home:'<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>',
+ shower:'<path d="M4 20V8a4 4 0 014-4h0a4 4 0 014 4M9 11h6a3 3 0 00-6 0zM10 15v1M13 15v2M16 15v1M11.5 18v1M14.5 18v1" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>',
+ shirt:'<path d="M8 3l-5 3 2 5 2-1v11h10V10l2 1 2-5-5-3a4 4 0 01-8 0z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>',
+ check:'<path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+ user:'<circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>',
+ chat:'<path d="M4 5h16v11H9l-5 4z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>',
+ list:'<path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>',
+ mapi:'<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>'
+};
+const ic=(n)=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
+
+/* ---------- dados fictícios ---------- */
+const VAGAS=[
+ {id:1,t:'Ajudante de cozinha',e:'Restaurante Sabor da Sé',b:'Sé',a:'Cozinha',s:'R$ 1.780',d:'1,2 km',turno:'Manhã (7h às 15h)',req:['Não precisa de experiência','Vale-transporte e refeição no local'],desc:'Ajudar no preparo dos alimentos, lavar louça e manter a cozinha organizada.'},
+ {id:2,t:'Auxiliar de limpeza',e:'Condomínio Edifício Itália',b:'Centro',a:'Limpeza',s:'R$ 1.650',d:'800 m',turno:'Tarde (12h às 20h)',req:['Ensino fundamental','Vale-transporte'],desc:'Limpeza das áreas comuns do prédio e apoio à zeladoria.'},
+ {id:3,t:'Repositor de mercado',e:'Mercado Popular Brás',b:'Brás',a:'Comércio',s:'R$ 1.720',d:'2,4 km',turno:'Noite (22h às 6h)',req:['Maior de 18 anos','Adicional noturno'],desc:'Repor produtos nas prateleiras e conferir validade.'},
+ {id:4,t:'Atendente de lanchonete',e:'Lanches Praça da Sé',b:'Sé',a:'Comércio',s:'R$ 1.700',d:'600 m',turno:'Manhã (6h às 14h)',req:['Gostar de atender pessoas','Treinamento no primeiro dia'],desc:'Atender clientes no balcão e organizar o salão.'},
+ {id:5,t:'Auxiliar de cozinha (marmitas)',e:'Cozinha Solidária Brás',b:'Brás',a:'Cozinha',s:'R$ 1.600',d:'2,1 km',turno:'Manhã (8h às 16h)',req:['Não precisa de experiência'],desc:'Montar e embalar marmitas para entrega.'},
+ {id:6,t:'Ajudante de limpeza (hospital)',e:'Serviços Hospitalares SP',b:'Centro',a:'Limpeza',s:'R$ 1.890',d:'1,5 km',turno:'Escala 12x36',req:['Ensino fundamental','Plano de saúde'],desc:'Higienização de corredores e salas de espera.'}
+];
+const PONTOS={
+ comida:[{id:'c1',n:'Bom Prato Centro',k:'Almoço por R$ 1',h:'Seg a sex, 10h30 às 14h',d:'600 m',min:8,end:'Rua Florêncio de Abreu, 123',open:true,x:62,y:34},
+         {id:'c2',n:'Cozinha Solidária Sé',k:'Refeição gratuita',h:'Todos os dias, 11h às 13h',d:'1,1 km',min:14,end:'Praça da Sé, lado da Catedral',open:true,x:30,y:58},
+         {id:'c3',n:'Sopão da Paróquia',k:'Sopa gratuita à noite',h:'Ter e qui, 19h às 21h',d:'1,8 km',min:22,end:'Rua do Carmo, 45',open:false,x:78,y:72}],
+ abrigo:[{id:'a1',n:'Centro de Acolhida Sé',k:'Pernoite e banho',h:'Entrada das 17h às 22h',d:'900 m',min:11,end:'Rua Tabatinguera, 200',open:true,x:44,y:30},
+         {id:'a2',n:'Casa de Passagem Glicério',k:'Para famílias',h:'24 horas',d:'2,0 km',min:25,end:'Rua dos Estudantes, 88',open:true,x:72,y:62}],
+ banho:[{id:'b1',n:'Centro POP Bela Vista',k:'Banho, lavanderia e guarda-volumes',h:'Seg a sex, 8h às 17h',d:'1,3 km',min:16,end:'Rua Santo Antônio, 300',open:true,x:26,y:40}],
+ roupas:[{id:'r1',n:'Doação de Agasalhos Liberdade',k:'Roupas e cobertores',h:'Sáb, 9h às 12h',d:'1,0 km',min:13,end:'Rua Galvão Bueno, 50',open:false,x:56,y:70},
+         {id:'r2',n:'Bazar Solidário Sé',k:'Roupas gratuitas',h:'Seg a sex, 9h às 16h',d:'700 m',min:9,end:'Rua Direita, 12',open:true,x:38,y:44}]
+};
+const CAT={comida:{n:'Comida',i:'food'},abrigo:{n:'Abrigo',i:'home'},banho:{n:'Banho',i:'shower'},roupas:{n:'Roupas',i:'shirt'}};
+const CURSOS=[{n:'Auxiliar de cozinha',o:'SENAI · gratuito',h:'40 horas'},{n:'Atendimento ao cliente',o:'Prefeitura de SP · gratuito',h:'20 horas'},{n:'Informática básica',o:'Telecentro · gratuito',h:'16 horas'}];
+const BENEF=[{n:'Bolsa Família',o:'Renda mensal para famílias',w:'Inscrição no CadÚnico no CRAS'},{n:'Tarifa Social de Energia',o:'Desconto na conta de luz',w:'Precisa estar no CadÚnico'},{n:'Bilhete Único Especial',o:'Transporte gratuito em casos previstos',w:'Pedido no posto SPTrans'}];
+const DOCS=[{id:'rg',n:'RG (2ª via)',x:'Gratuita para quem está no CadÚnico'},{id:'cpf',n:'CPF',x:'Gratuito'},{id:'ctps',n:'Carteira de Trabalho Digital',x:'Gratuita, com ajuda do atendente'},{id:'cert',n:'Certidão de Nascimento (2ª via)',x:'Gratuita para baixa renda'}];
+const POSTOS=[{id:'p1',n:'Poupatempo Sé',e:'Praça do Carmo, s/n'},{id:'p2',n:'Descomplica Mooca',e:'Rua Taquari, 549'}];
+
+/* ---------- estado ---------- */
+const S={mode:'app',fs:1,
+ app:{stack:['home'],tab:'home',filtB:'Todos',filtA:'Todas',vaga:null,cat:'comida',openOnly:false,ponto:null,view:'mapa',cv:null,cvDraft:{nome:'',tel:'',exp:[]},apps:[],lembretes:[],after:null},
+ k:{scr:'inicio',nome:'',cpf:'',noCpf:false,doc:null,posto:'p1',dia:null,hora:null,printed:false,sms:''},
+ toast:null};
+
+function days(){const out=[];const d=new Date();d.setHours(12);while(out.length<10){d.setDate(d.getDate()+1);const w=d.getDay();if(w>0&&w<6)out.push(new Date(d));}return out}
+const DAYS=days();
+const WD=['dom','seg','ter','qua','qui','sex','sáb'];const MES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const fmt=(d)=>`${WD[d.getDay()]}, ${d.getDate()} de ${MES[d.getMonth()]}`;
+
+/* ---------- utilidades ---------- */
+function speak(txt){try{const s=window.speechSynthesis;if(!s){toast('Áudio indisponível neste navegador');return}s.cancel();const u=new SpeechSynthesisUtterance(txt);u.lang='pt-BR';u.rate=.95;s.speak(u)}catch(e){toast('Áudio indisponível neste navegador')}}
+let tTimer;function toast(msg,undo){S.toast={msg,undo};render();clearTimeout(tTimer);tTimer=setTimeout(()=>{S.toast=null;render()},3200)}
+const A=()=>S.app;const cur=()=>A().stack[A().stack.length-1];
+function go(s){A().stack.push(s);render(true)}
+function back(){if(A().stack.length>1)A().stack.pop();render(true)}
+function tab(t){A().tab=t;A().stack=[t];render(true)}
+
+/* ---------- telas do app ---------- */
+function bar(title,read,canBack=true){return `<div class="bar">${canBack?`<button class="icon-btn" data-act="back" aria-label="Voltar">${ic('back')}</button>`:''}<h2>${title}</h2><button class="icon-btn" data-act="fs" aria-label="Aumentar letra">A+</button><button class="icon-btn" data-act="speak" data-say="${read}" aria-label="Ouvir esta tela">${ic('sound')}</button></div>`}
+const APP={
+ home(){return bar('Ponte','Olá! Do que você precisa? Toque em Preciso agora para comida, abrigo, banho ou roupas. Toque em Quero mudar de vida para emprego, cursos, benefícios e documentos.',false)+`
+  <div class="body">
+   <p class="big">Olá! Do que você precisa hoje?</p>
+   <button class="door urgent" data-go="agora"><div class="ico">${ic('bolt')}</div><div><b>Preciso agora</b><span>Comida, abrigo, banho e roupas perto de você</span></div></button>
+   <button class="door future" data-go="mudar"><div class="ico">${ic('sprout')}</div><div><b>Quero mudar de vida</b><span>Emprego, cursos, benefícios e documentos</span></div></button>
+   <button class="card" data-act="whats"><div class="meta" style="color:var(--ink);font-weight:700;gap:10px;align-items:center">${ic('chat').replace('<svg','<svg style="width:22px;height:22px;color:var(--future)"')} Prefere conversar? Fale com a Ponte no WhatsApp</div></button>
+  </div>`},
+ mudar(){return bar('Mudar de vida','Escolha o que você procura: vagas, cursos, benefícios ou documentos.')+`
+  <div class="body"><p class="hint">O que você procura?</p>
+   <div class="grid2">
+    <button class="tile f" data-go="vagas">${ic('bag')}Vagas<small>${VAGAS.length} perto de você</small></button>
+    <button class="tile f" data-go="cursos">${ic('book')}Cursos<small>gratuitos</small></button>
+    <button class="tile f" data-go="benef">${ic('money')}Benefícios<small>veja se tem direito</small></button>
+    <button class="tile f" data-go="docs">${ic('id')}Documentos<small>agende a emissão</small></button>
+   </div></div>`},
+ vagas(){const a=A();const L=VAGAS.filter(v=>(a.filtB==='Todos'||v.b===a.filtB)&&(a.filtA==='Todas'||v.a===a.filtA));
+  const chip=(k,v)=>`<button class="chip" data-act="filt" data-k="${k}" data-v="${v}" aria-pressed="${a[k]===v}">${v}</button>`;
+  return bar('Vagas perto de você','Lista de vagas. Use os filtros de bairro e área. Toque em uma vaga para ver os detalhes.')+`
+  <div class="body">
+   <div><div class="lbl">Bairro</div><div class="chips">${['Todos','Centro','Sé','Brás'].map(v=>chip('filtB',v)).join('')}</div></div>
+   <div><div class="lbl">Área</div><div class="chips">${['Todas','Cozinha','Limpeza','Comércio'].map(v=>chip('filtA',v)).join('')}</div></div>
+   <p class="hint" aria-live="polite">${L.length} ${L.length===1?'vaga encontrada':'vagas encontradas'}</p>
+   ${L.length?L.map(v=>`<button class="card" data-act="vaga" data-id="${v.id}"><h3>${v.t}</h3><div class="meta"><span>${v.e}</span></div><div class="meta"><span class="pill">${v.s}</span><span>${v.d} · ${v.b}</span>${a.apps.some(x=>x.id===v.id)?'<span class="pill ok">Você já se candidatou</span>':''}</div></button>`).join(''):
+   `<div class="card center"><b>Nenhuma vaga com esses filtros.</b><button class="cta ghost" data-act="clearf">Limpar filtros</button></div>`}
+  </div>`},
+ vaga(){const v=VAGAS.find(x=>x.id===A().vaga);const done=A().apps.some(x=>x.id===v.id);
+  return bar(v.t,`${v.t}, na empresa ${v.e}. Salário ${v.s}. Turno ${v.turno}. ${v.desc} Para se candidatar, toque no botão no fim da tela.`)+`
+  <div class="body">
+   <div class="card" style="background:var(--future-soft);border-color:transparent"><div class="lbl">${v.e}</div><h3 class="big" style="font-size:24px">${v.t}</h3><div class="meta"><span class="pill">${v.s} por mês</span><span>${v.d} · ${v.b}</span></div></div>
+   <div class="sumtbl"><dt>Turno</dt><dd>${v.turno}</dd><dt>Área</dt><dd>${v.a}</dd></div>
+   <div><div class="lbl">O que vai fazer</div><p style="margin:4px 0 0">${v.desc}</p></div>
+   <div><div class="lbl">O que precisa</div><ul style="margin:4px 0 0;padding-left:20px">${v.req.map(r=>`<li>${r}</li>`).join('')}</ul></div>
+  </div>
+  <div class="foot">${done?'<button class="cta" disabled>Candidatura enviada</button>':`<button class="cta" data-act="apply">Candidatar-me</button><p class="note" style="margin:0">${A().cv?'Vamos enviar seu currículo simplificado.':'Antes, vamos montar seu currículo em 3 perguntas.'}</p>`}</div>`},
+ cv(){const d=A().cvDraft;const ok=d.nome.trim().length>1&&d.tel.replace(/\D/g,'').length>=10;
+  const exps=['Cozinha','Limpeza','Obras','Vendas','Cuidar de pessoas','Nunca trabalhei registrado'];
+  return bar('Seu currículo','Monte seu currículo em três perguntas: seu nome, um telefone para contato e onde você já trabalhou.')+`
+  <div class="body"><p class="hint">Só 3 perguntas. Você faz isso uma vez e usa em todas as vagas.</p>
+   <div class="field"><label for="cv-nome">1. Como você se chama?</label><input id="cv-nome" data-in="nome" value="${d.nome}" placeholder="Nome ou apelido" autocomplete="name"></div>
+   <div class="field"><label for="cv-tel">2. Telefone ou WhatsApp para recado</label><input id="cv-tel" data-in="tel" value="${d.tel}" placeholder="(11) 90000-0000" inputmode="tel"></div>
+   <div class="field"><label>3. Onde você já trabalhou? <span class="hint" style="font-weight:400">(pode marcar mais de um)</span></label>
+    <div class="chips" style="flex-wrap:wrap">${exps.map(e=>`<button class="chip" data-act="exp" data-v="${e}" aria-pressed="${d.exp.includes(e)}">${e}</button>`).join('')}</div></div>
+  </div><div class="foot"><button class="cta" data-act="cvsave" ${ok?'':'disabled'}>Salvar e enviar candidatura</button></div>`},
+ okvaga(){const v=VAGAS.find(x=>x.id===A().vaga);const c=CURSOS[v.a==='Cozinha'?0:1];
+  return bar('Pronto!','Pronto! Sua candidatura foi enviada. Vamos avisar pelo WhatsApp quando a empresa responder.',false)+`
+  <div class="body center"><div class="check">${ic('check')}</div><p class="big">Candidatura enviada!</p>
+   <p class="hint">Mandamos seu currículo para <b>${v.e}</b>. Quando a empresa responder, você recebe uma mensagem no WhatsApp.</p>
+   <div class="card" style="text-align:left"><div class="lbl">Sugestão para você</div><h3>Curso gratuito: ${c.n}</h3><div class="meta"><span>${c.o}</span><span>${c.h}</span></div></div>
+  </div><div class="foot"><button class="cta" data-act="tab" data-t="minhas">Ver minhas candidaturas</button><button class="cta ghost" data-act="tab" data-t="home">Voltar ao início</button></div>`},
+ cursos(){return bar('Cursos gratuitos','Cursos gratuitos perto de você.')+`<div class="body">${CURSOS.map(c=>`<div class="card"><h3>${c.n}</h3><div class="meta"><span>${c.o}</span><span>${c.h}</span></div><button class="cta ghost" data-act="toast" data-msg="Inscrição em cursos fica para a próxima versão do protótipo">Quero me inscrever</button></div>`).join('')}</div>`},
+ benef(){return bar('Benefícios','Benefícios sociais e como pedir.')+`<div class="body"><p class="hint">Veja os benefícios e como pedir. O CRAS mais próximo pode ajudar.</p>${BENEF.map(b=>`<div class="card"><h3>${b.n}</h3><p class="hint">${b.o}</p><div class="meta"><span class="pill">Como pedir</span><span>${b.w}</span></div></div>`).join('')}</div>`},
+ docs(){return bar('Documentos','Para agendar documentos, use o totem no CRAS ou no Centro POP, com ajuda do assistente social.')+`<div class="body"><p class="hint">Estes documentos podem ser agendados de graça. O agendamento é feito no totem do CRAS ou do Centro POP, com o assistente social.</p>${DOCS.map(d=>`<div class="card"><h3>${d.n}</h3><p class="hint">${d.x}</p></div>`).join('')}<button class="cta ghost" data-act="tomode" data-m="kiosk">Ver como funciona no totem</button></div>`},
+ agora(){const a=A();return bar('Preciso agora','Escolha o que você precisa agora: comida, abrigo, banho ou roupas.')+`
+  <div class="body"><p class="big" style="font-size:22px">O que você precisa agora?</p>
+   <div class="grid2">${Object.entries(CAT).map(([k,c])=>`<button class="tile u" data-act="cat" data-k="${k}">${ic(c.i)}${c.n}<small>${PONTOS[k].filter(p=>p.open&&!p.off).length} abertos agora</small></button>`).join('')}</div>
+   <button class="cta ghost" data-act="whats">Falar com alguém pelo WhatsApp</button>
+  </div>`},
+ mapa(){const a=A();const L=PONTOS[a.cat].filter(p=>!p.off&&(!a.openOnly||p.open));const c=CAT[a.cat];
+  const tg=`<div class="chips"><button class="chip" data-act="view" data-v="mapa" aria-pressed="${a.view==='mapa'}">Mapa</button><button class="chip" data-act="view" data-v="lista" aria-pressed="${a.view==='lista'}">Lista</button><button class="chip" data-act="open" aria-pressed="${a.openOnly}">Só abertos agora</button></div>`;
+  const map=`<div class="map" role="img" aria-label="Mapa com ${L.length} locais">
+   <svg class="streets" viewBox="0 0 100 100" preserveAspectRatio="none"><g stroke="var(--card)" stroke-width="3.2" fill="none"><path d="M0 22H100M0 50H100M0 80H100M18 0V100M48 0V100M82 0V100"/><path d="M0 96L100 6" stroke-width="2"/></g><rect x="52" y="54" width="26" height="22" fill="var(--ok-soft)"/></svg>
+   <div class="me" style="left:50%;top:50%"></div>
+   ${L.map(p=>`<button class="pin" style="left:${p.x}%;top:${p.y}%" data-act="ponto" data-id="${p.id}" aria-label="${p.n}"><i class="${p.open?'':'closed'}"></i><span>${p.n.split(' ').slice(0,2).join(' ')}</span></button>`).join('')}
+  </div><p class="hint">Toque em um ponto do mapa. O ponto azul é você.</p>`;
+  const list=L.map(p=>`<button class="card" data-act="ponto" data-id="${p.id}"><h3>${p.n}${p.org?' <span class="pill">Novo</span>':''}</h3><div class="meta"><span class="pill ${p.open?'ok':'u'}">${p.open?'Aberto agora':'Fechado agora'}</span><span>${p.d} · ${p.min} min a pé</span></div><div class="meta">${p.k}</div></button>`).join('')||'<p class="hint">Nenhum local aberto agora. Desligue o filtro para ver todos.</p>';
+  return bar(`${c.n} perto de você`,`Locais de ${c.n.toLowerCase()} perto de você. Toque em um local para ver horário e como chegar.`)+`<div class="body">${tg}${a.view==='mapa'?map:list}</div>`},
+ ponto(){const p=Object.values(PONTOS).flat().find(x=>x.id===A().ponto);const lem=A().lembretes.includes(p.id);
+  return bar(p.n,`${p.n}. ${p.k}. ${p.open?'Aberto agora.':'Fechado agora.'} Horário: ${p.h}. Fica a ${p.d}, ${p.min} minutos a pé. Endereço: ${p.end}.`)+`
+  <div class="body">
+   <div class="card" style="background:var(--urgent-soft);border-color:transparent"><span class="pill ${p.open?'ok':'u'}" style="align-self:flex-start">${p.open?'Aberto agora':'Fechado agora'}</span><h3 class="big" style="font-size:24px">${p.n}</h3><p class="hint" style="color:var(--ink)">${p.k}</p>${p.org?`<span class="pill" style="align-self:flex-start">Cadastrado por ${p.org}</span>`:''}</div>
+   <div class="sumtbl"><dt>Horário</dt><dd>${p.h}</dd><dt>Distância</dt><dd>${p.d} · ${p.min} min a pé</dd><dt>Endereço</dt><dd>${p.end}</dd></div>
+   <button class="toggle" data-act="lembrete" aria-pressed="${lem}"><span><b>Me avise antes de abrir</b><br><span class="hint">Lembrete pelo WhatsApp ou SMS</span></span><span class="sw"></span></button>
+  </div><div class="foot"><button class="cta u" data-go="rota">Como chegar</button></div>`},
+ rota(){const p=Object.values(PONTOS).flat().find(x=>x.id===A().ponto);
+  return bar('Como chegar',`Caminho a pé até ${p.n}, cerca de ${p.min} minutos.`)+`
+  <div class="body"><div class="card" style="flex-direction:row;align-items:center;gap:14px"><div style="font-family:var(--display);font-size:34px;font-weight:800;color:var(--urgent)">${p.min}<small style="font-size:14px"> min</small></div><div><b>a pé até ${p.n}</b><div class="hint">${p.d} · ${p.end}</div></div></div>
+   <ol class="steps"><li><b>1</b><span>Saia em direção à Praça da Sé</span></li><li><b>2</b><span>Siga reto por 3 quarteirões</span></li><li><b>3</b><span>Vire à direita na esquina da farmácia</span></li><li><b>4</b><span>Chegada: ${p.end}</span></li></ol>
+   <p class="hint">Rota simulada no protótipo. Na versão final, abre o mapa do celular.</p>
+  </div><div class="foot"><button class="cta ghost" data-act="tab" data-t="home">Voltar ao início</button></div>`},
+ minhas(){const a=A();const cand=a.apps.map(x=>VAGAS.find(v=>v.id===x.id));const lem=a.lembretes.map(id=>Object.values(PONTOS).flat().find(p=>p.id===id));
+  return bar('Minhas coisas','Aqui ficam suas candidaturas, seus lembretes e seu currículo.',false)+`
+  <div class="body">
+   <div class="lbl">Candidaturas</div>${cand.length?cand.map(v=>`<div class="card"><h3>${v.t}</h3><div class="meta"><span>${v.e}</span><span class="pill">Enviada · aguardando resposta</span></div></div>`).join(''):'<div class="card"><span class="hint">Você ainda não se candidatou. Vá em Quero mudar de vida → Vagas.</span><button class="cta ghost" data-act="jump" data-to="vagas">Ver vagas</button></div>'}
+   <div class="lbl">Lembretes</div>${lem.length?lem.map(p=>`<div class="card"><h3>${p.n}</h3><div class="meta"><span>${p.h}</span></div></div>`).join(''):'<div class="card hint">Nenhum lembrete. Ative em um ponto de apoio.</div>'}
+   <div class="lbl">Currículo</div><div class="card">${a.cv?`<h3>${a.cv.nome}</h3><div class="meta"><span>${a.cv.tel}</span><span>${a.cv.exp.join(', ')||'Sem experiência informada'}</span></div>`:'<span class="hint">Ainda não criado. Ele é montado na primeira candidatura.</span>'}</div>
+  </div>`},
+ ajuda(){return bar('Ajuda','Ajuda. Você pode falar com a Ponte pelo WhatsApp ou procurar o CRAS mais perto.',false)+`
+  <div class="body"><p class="big" style="font-size:22px">Precisa de ajuda?</p>
+   <div class="card"><h3>WhatsApp da Ponte</h3><p class="hint">Mande "oi" e responda com números. Funciona em qualquer celular.</p><div style="font-size:20px;font-weight:700;user-select:all">(11) 4000-0000</div></div>
+   <div class="card"><h3>CRAS Sé</h3><p class="hint">Atendimento com assistente social e totem Ponte.</p><div class="meta"><span>Rua Major Quedinho, 90</span><span>Seg a sex, 8h às 17h</span></div></div>
+   <div class="card"><h3>Emergência</h3><div class="meta"><span>SAMU 192</span><span>Disque Direitos Humanos 100</span></div></div>
+  </div>`}
+};
+
+function renderApp(){
+ const s=cur();const navOn=['home','minhas','ajuda'].includes(A().tab);
+ const n=(t,i,l)=>`<button data-act="tab" data-t="${t}" aria-current="${A().tab===t}">${ic(i)}<span>${l}${t==='minhas'&&A().apps.length?`<span class="badge">${A().apps.length}</span>`:''}</span></button>`;
+ return `<div class="device phone" id="dev"><div class="screen" id="scr">${APP[s]()}</div>
+  <nav class="nav" aria-label="Menu">${n('home','home','Início')}${n('minhas','list','Minhas coisas')}${n('ajuda','chat','Ajuda')}</nav>
+  ${S.toast?`<div class="toast" role="status"><span>${S.toast.msg}</span>${S.toast.undo?'<button data-act="undo">Desfazer</button>':''}</div>`:''}</div>`;
+}
+
+/* ---------- totem ---------- */
+const KSTEPS=['id','servico','docs','agendar','revisar','fim'];
+function kbar(){return `<div class="k-bar"><b>Ponte · Centro POP Sé</b><button class="icon-btn" data-act="fs" aria-label="Aumentar letra">A+</button><button class="icon-btn" data-act="kspeak" aria-label="Ouvir esta tela">${ic('sound')} Ouvir</button>${S.k.scr!=='inicio'?'<button class="icon-btn" data-act="kreset">Sair</button>':''}</div>`}
+function prog(){const i=KSTEPS.indexOf(S.k.scr);if(i<0)return'';return `<div class="progress" aria-label="Passo ${i+1} de ${KSTEPS.length}">${KSTEPS.map((_,j)=>`<i class="${j<=i?'on':''}"></i>`).join('')}</div>`}
+const KSAY={inicio:'Bem-vindo à Ponte. Toque em Iniciar atendimento.',id:'Digite o nome ou apelido da pessoa. O CPF é opcional.',servico:'O que vamos fazer hoje? Escolha um serviço.',docs:'Qual documento a pessoa precisa?',agendar:'Escolha o posto, o dia e o horário.',revisar:'Confira os dados antes de confirmar.',fim:'Agendamento feito. Imprima o comprovante ou envie por SMS.',lista:'Locais perto daqui. Toque em imprimir para levar o endereço.'};
+const KIOSK={
+ inicio(){return `<div class="k-body center" style="justify-content:center;align-items:center"><p class="lbl">Totem de atendimento</p><p class="big" style="font-size:36px">Bem-vindo à Ponte</p><p class="hint" style="max-width:420px">Atendimento com apoio do assistente social. Não precisa ter celular nem documento.</p>
+  <button class="cta" style="max-width:420px;min-height:80px;font-size:24px" data-k="id">Iniciar atendimento</button>
+  <p class="note">Toque em <b>A+</b> para letra maior ou em <b>Ouvir</b> para escutar a tela.</p></div>`},
+ id(){const k=S.k;const ok=k.nome.trim().length>1;
+  const rows=['QWERTYUIOP','ASDFGHJKLÇ','ZXCVBNM'];
+  return `<div class="k-body"><p class="big">Quem está sendo atendido?</p>
+   <div class="row"><div class="field" style="flex:2"><label for="k-nome">Nome ou apelido</label><input id="k-nome" data-kin="nome" value="${k.nome}" placeholder="Ex.: Marta" autocomplete="off"></div>
+   <div class="field"><label for="k-cpf">CPF (se tiver)</label><input id="k-cpf" data-kin="cpf" value="${k.noCpf?'':k.cpf}" placeholder="000.000.000-00" inputmode="numeric" ${k.noCpf?'disabled':''}></div></div>
+   <button class="toggle" data-act="nocpf" aria-pressed="${k.noCpf}"><span><b>Não tenho CPF ou documento</b><br><span class="hint">Tudo bem. O nome ou apelido basta para começar.</span></span><span class="sw"></span></button>
+   <div class="keys" aria-label="Teclado na tela">${rows.map(r=>[...r].map(c=>`<button data-act="key" data-c="${c}">${c}</button>`).join('')).join('')}<button class="wide" data-act="key" data-c=" ">espaço</button><button class="wide" data-act="key" data-c="⌫">apagar</button></div>
+  </div><div class="k-foot"><button class="cta ghost" data-k="inicio">Voltar</button><button class="cta" data-k="servico" ${ok?'':'disabled'}>Continuar</button></div>`},
+ servico(){const t=(k,i,l,cls,go)=>`<button class="tile ${cls}" data-act="ksvc" data-s="${k}">${ic(i)}${l}</button>`;
+  return `<div class="k-body"><p class="big">${S.k.nome.split(' ')[0]}, o que vamos fazer hoje?</p>
+   <div class="grid3">${t('docs','id','Documentos','f')}${t('comida','food','Comida','u')}${t('abrigo','home','Abrigo','u')}${t('vagas','bag','Vagas','f')}${t('benef','money','Benefícios','f')}${t('roupas','shirt','Roupas','u')}</div>
+  </div><div class="k-foot"><button class="cta ghost" data-k="id">Voltar</button></div>`},
+ docs(){return `<div class="k-body"><p class="big">Qual documento?</p>${DOCS.map(d=>`<button class="opt" data-act="kdoc" data-id="${d.id}" aria-pressed="${S.k.doc===d.id}"><span class="dot"></span><span><b>${d.n}</b><br><span class="hint">${d.x}</span></span></button>`).join('')}
+  </div><div class="k-foot"><button class="cta ghost" data-k="servico">Voltar</button><button class="cta" data-k="agendar" ${S.k.doc?'':'disabled'}>Continuar</button></div>`},
+ agendar(){const k=S.k;const horas=['8h30','9h30','10h30','13h00','14h30'];const full=[1,4,7];
+  return `<div class="k-body"><p class="big">Escolha onde e quando</p>
+   <div class="lbl">Posto</div><div class="row">${POSTOS.map(p=>`<button class="opt" data-act="kposto" data-id="${p.id}" aria-pressed="${k.posto===p.id}"><span class="dot"></span><span><b>${p.n}</b><br><span class="hint">${p.e}</span></span></button>`).join('')}</div>
+   <div class="lbl">Dia</div><div class="cal">${DAYS.map((d,i)=>`<button class="day" data-act="kdia" data-i="${i}" aria-pressed="${k.dia===i}" ${full.includes(i)?'disabled title="Sem vagas"':''}>${WD[d.getDay()]}<b>${d.getDate()}</b>${full.includes(i)?'lotado':MES[d.getMonth()]}</button>`).join('')}</div>
+   ${k.dia!==null?`<div class="lbl">Horário</div><div class="chips" style="flex-wrap:wrap">${horas.map(h=>`<button class="chip" data-act="khora" data-h="${h}" aria-pressed="${k.hora===h}">${h}</button>`).join('')}</div>`:'<p class="hint">Escolha um dia para ver os horários.</p>'}
+  </div><div class="k-foot"><button class="cta ghost" data-k="docs">Voltar</button><button class="cta" data-k="revisar" ${k.dia!==null&&k.hora?'':'disabled'}>Continuar</button></div>`},
+ revisar(){const k=S.k;const d=DOCS.find(x=>x.id===k.doc),p=POSTOS.find(x=>x.id===k.posto);
+  return `<div class="k-body"><p class="big">Confira antes de confirmar</p>
+   <dl class="sumtbl"><dt>Pessoa</dt><dd>${k.nome}</dd><dt>CPF</dt><dd>${k.noCpf||!k.cpf?'Não informado':k.cpf}</dd><dt>Documento</dt><dd>${d.n}</dd><dt>Local</dt><dd>${p.n} · ${p.e}</dd><dt>Dia e hora</dt><dd>${fmt(DAYS[k.dia])}, às ${k.hora}</dd></dl>
+   <div class="card" style="background:var(--future-soft);border-color:transparent"><b>Leve no dia:</b><span>Certidão de nascimento ou de casamento (se tiver). Se não tiver, o assistente social emite uma declaração.</span></div>
+  </div><div class="k-foot"><button class="cta ghost" data-k="agendar">Corrigir</button><button class="cta" data-act="kconf">Confirmar agendamento</button></div>`},
+ fim(){const k=S.k;const d=DOCS.find(x=>x.id===k.doc),p=POSTOS.find(x=>x.id===k.posto);
+  return `<div class="k-body"><div class="row" style="align-items:center"><div style="flex:0 0 auto;min-width:0"><div class="check" style="margin:0">${ic('check')}</div></div><div><p class="big">Agendado!</p><p class="hint">Imprima o comprovante ou mande por SMS para um celular de confiança.</p></div></div>
+   <div class="ticket ${k.printed?'printing':''}" aria-label="Comprovante"><b>PONTE · COMPROVANTE</b><hr>${k.nome.toUpperCase()}<br>${d.n.toUpperCase()}<hr>${p.n}<br>${p.e}<br><b>${fmt(DAYS[k.dia]).toUpperCase()} · ${k.hora}</b><hr>Protocolo: PT-${String(1000+k.nome.length*137).slice(0,4)}-${k.dia+10}<br>Dúvidas: CRAS Sé · (11) 4000-0000</div>
+   <div class="row"><div class="field"><label for="k-sms">Celular para SMS (opcional)</label><input id="k-sms" data-kin="sms" value="${k.sms}" inputmode="tel" placeholder="(11) 90000-0000"></div></div>
+  </div><div class="k-foot"><button class="cta ghost" data-act="ksms">Enviar SMS</button><button class="cta" data-act="kprint">Imprimir</button><button class="cta ghost" data-act="kreset">Finalizar</button></div>`},
+ lista(){const c=S.k.svc;const L=(PONTOS[c]||[]).filter(p=>!p.off);
+  return `<div class="k-body"><p class="big">${CAT[c].n} perto daqui</p>${L.map(p=>`<div class="card"><h3>${p.n}</h3><div class="meta"><span class="pill ${p.open?'ok':'u'}">${p.open?'Aberto agora':'Fechado agora'}</span><span>${p.h}</span><span>${p.d} · ${p.min} min a pé</span></div><div class="meta">${p.end}</div><button class="cta ghost" data-act="toast" data-msg="Imprimindo endereço de ${p.n}…">Imprimir endereço</button></div>`).join('')}
+  </div><div class="k-foot"><button class="cta ghost" data-k="servico">Voltar</button></div>`},
+ outro(){return `<div class="k-body center" style="justify-content:center"><p class="big">${S.k.svcN}</p><p class="hint">Neste protótipo, o fluxo completo do totem é o de <b>Documentos</b>. ${S.k.svcN} está no aplicativo, na porta "Quero mudar de vida".</p><button class="cta" data-k="servico">Escolher outro serviço</button></div>`}
+};
+function renderKiosk(){return `<div><div class="device kiosk" id="dev">${kbar()}${prog()}<div class="screen" id="scr">${KIOSK[S.k.scr]()}</div>${S.toast?`<div class="toast" role="status" style="bottom:100px"><span>${S.toast.msg}</span></div>`:''}</div><div class="kiosk-base"></div></div>`}
+
+/* ---------- área do parceiro ---------- */
+const ORG='Instituto Mãos Dadas';
+const BAIRROS={'Sé':[40,38],'Centro':[60,24],'Brás':[84,42],'Liberdade':[44,80],'Bela Vista':[20,66]};
+const DIAS=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+const CATDESC={comida:'Distribuição de comida',abrigo:'Acolhida para pernoite',banho:'Banho e higiene',roupas:'Doação de roupas'};
+const newDraft=()=>({cat:'',nome:'',bairro:'',rua:'',dias:[],ini:'',fim:'',qtd:'',obs:''});
+S.p={scr:'lista',draft:newDraft(),errs:{},acoes:[],last:null};
+const hh=(t)=>{const [h,m]=t.split(':');return `${+h}h${m==='00'?'':m}`};
+function diasTxt(ds){const o=DIAS.filter(d=>ds.includes(d));if(o.length===7)return'Todos os dias';if(o.join()==='Seg,Ter,Qua,Qui,Sex')return'Seg a sex';if(o.join()==='Sáb,Dom')return'Sáb e dom';return o.join(', ')}
+let seq=0;
+function addAcao(d){const id='pa'+(++seq);const [bx,by]=BAIRROS[d.bairro];const x=bx+(seq%3-1)*5,y=by+(seq%2?4:-4);
+ const m=Math.round(Math.hypot(x-50,y-50)*28/10)*10;
+ const p={id,n:d.nome,k:CATDESC[d.cat]+(d.qtd?` · até ${d.qtd} pessoas`:''),h:`${diasTxt(d.dias)}, ${hh(d.ini)} às ${hh(d.fim)}`,d:m>=1000?(m/1000).toFixed(1).replace('.',',')+' km':m+' m',min:Math.max(3,Math.round(m/80)),end:`${d.rua} · ${d.bairro}`,open:true,x,y,org:ORG,qtd:+d.qtd||0,obs:d.obs};
+ PONTOS[d.cat].push(p);S.p.acoes.unshift({id,cat:d.cat});return p}
+addAcao({cat:'comida',nome:'Café da manhã solidário',bairro:'Liberdade',rua:'Rua da Glória, 210',dias:['Sáb','Dom'],ini:'07:00',fim:'09:00',qtd:'80',obs:''});
+const findP=(id)=>Object.values(PONTOS).flat().find(p=>p.id===id);
+
+const PART={
+ head(){return `<div class="p-head"><div class="avatar">MD</div><div class="org"><span class="lbl">Área do Parceiro</span><b>${ORG}</b></div><button class="small-btn" data-act="toast" data-msg="Sair da conta fica para a versão final">Sair</button></div>`},
+ lista(){const L=S.p.acoes.map(a=>findP(a.id));const ativos=L.filter(p=>!p.off);
+  return this.head()+`<div class="k-body">
+   <div class="stat"><div><span class="lbl">Ações publicadas</span><b>${ativos.length}</b></div><div><span class="lbl">Pessoas atendidas por dia</span><b>${ativos.reduce((s,p)=>s+p.qtd,0)}</b></div></div>
+   <button class="cta" data-act="pnew">+ Cadastrar nova ação</button>
+   <div class="lbl">Minhas ações</div>
+   ${L.map(p=>{const cat=S.p.acoes.find(a=>a.id===p.id).cat;return `<div class="card acao"><div class="info"><h3>${p.n}</h3><div class="meta"><span class="pill u">${CAT[cat].n}</span><span class="pill ${p.off?'u':'ok'}">${p.off?'Pausada':'Publicada'}</span></div><div class="meta"><span>${p.h}</span><span>${p.end}</span></div></div>
+    <div class="row" style="flex:0 0 auto;gap:8px"><button class="small-btn" data-act="pview" data-id="${p.id}" data-c="${cat}" ${p.off?'disabled':''}>Ver no app</button><button class="small-btn" data-act="poff" data-id="${p.id}">${p.off?'Reativar':'Pausar'}</button></div></div>`}).join('')}
+  </div>`},
+ form(){const d=S.p.draft,e=S.p.errs;const er=(k)=>e[k]?`<span class="err">${e[k]}</span>`:'';
+  return this.head()+`<div class="k-body"><p class="big" style="font-size:24px">Nova ação social</p><p class="hint">Conte o que vocês vão oferecer. A ação aparece no mapa do app e na lista do totem.</p>
+   <div class="field"><label>O que a ação oferece?</label><div class="grid2 cat4">${Object.entries(CAT).map(([k,c])=>`<button class="opt" style="flex-direction:column;padding:10px;font-size:15px" data-act="pcat" data-k="${k}" aria-pressed="${d.cat===k}">${ic(c.i).replace('<svg','<svg style="width:26px;height:26px;color:var(--urgent)"')}${c.n}</button>`).join('')}</div>${er('cat')}</div>
+   <div class="field"><label for="p-nome">Nome da ação</label><input id="p-nome" data-pin="nome" value="${d.nome}" placeholder="Ex.: Marmitas solidárias da Sé">${er('nome')}</div>
+   <div class="row"><div class="field" style="flex:1"><label for="p-bairro">Bairro</label><select id="p-bairro" data-pin="bairro"><option value="">Escolha</option>${Object.keys(BAIRROS).map(b=>`<option ${d.bairro===b?'selected':''}>${b}</option>`).join('')}</select>${er('bairro')}</div>
+    <div class="field" style="flex:2"><label for="p-rua">Endereço ou ponto de referência</label><input id="p-rua" data-pin="rua" value="${d.rua}" placeholder="Ex.: Rua Direita, 40 (em frente ao metrô)">${er('rua')}</div></div>
+   <div class="field"><label>Em quais dias?</label><div class="chips" style="flex-wrap:wrap">${DIAS.map(x=>`<button class="chip" data-act="pdia" data-v="${x}" aria-pressed="${d.dias.includes(x)}">${x}</button>`).join('')}</div>${er('dias')}</div>
+   <div class="row"><div class="field"><label for="p-ini">Começa às</label><input id="p-ini" type="time" data-pin="ini" value="${d.ini}"></div><div class="field"><label for="p-fim">Termina às</label><input id="p-fim" type="time" data-pin="fim" value="${d.fim}"></div><div class="field"><label for="p-qtd">Quantas pessoas? <span class="hint" style="font-weight:400">(opcional)</span></label><input id="p-qtd" type="number" min="1" data-pin="qtd" value="${d.qtd}" placeholder="Ex.: 100"></div></div>${er('hora')}
+   <div class="field"><label for="p-obs">Recado para quem vem <span class="hint" style="font-weight:400">(opcional)</span></label><textarea id="p-obs" data-pin="obs" placeholder="Ex.: Traga uma vasilha. Atendemos por ordem de chegada.">${d.obs}</textarea></div>
+  </div><div class="k-foot"><button class="cta ghost" data-act="pcancel">Cancelar</button><button class="cta" data-act="prev">Revisar</button></div>`},
+ rev(){const d=S.p.draft;return this.head()+`<div class="k-body"><p class="big" style="font-size:24px">Confira antes de publicar</p>
+   <dl class="sumtbl"><dt>Tipo</dt><dd>${CAT[d.cat].n}</dd><dt>Nome</dt><dd>${d.nome}</dd><dt>Onde</dt><dd>${d.rua} · ${d.bairro}</dd><dt>Quando</dt><dd>${diasTxt(d.dias)}, ${hh(d.ini)} às ${hh(d.fim)}</dd><dt>Pessoas</dt><dd>${d.qtd||'Não informado'}</dd>${d.obs?`<dt>Recado</dt><dd>${d.obs}</dd>`:''}</dl>
+   <div class="lbl">Assim a pessoa vai ver no app</div>
+   <div class="card" style="max-width:360px"><h3>${d.nome} <span class="pill">Novo</span></h3><div class="meta"><span class="pill ok">Aberto no horário</span><span>${diasTxt(d.dias)}, ${hh(d.ini)} às ${hh(d.fim)}</span></div><div class="meta">${CATDESC[d.cat]}${d.qtd?` · até ${d.qtd} pessoas`:''}</div></div>
+   <p class="hint">Ao publicar, vocês confirmam que as informações são verdadeiras. A equipe Ponte pode pausar ações com denúncia.</p>
+  </div><div class="k-foot"><button class="cta ghost" data-act="pback">Corrigir</button><button class="cta" data-act="ppub">Publicar ação</button></div>`},
+ ok(){const p=findP(S.p.last);return this.head()+`<div class="k-body center" style="justify-content:center"><div class="check">${ic('check')}</div><p class="big">Ação publicada!</p><p class="hint"><b>${p.n}</b> já aparece no mapa do aplicativo e na lista do totem do CRAS e do Centro POP.</p>
+   <div class="row" style="max-width:520px;margin:0 auto;width:100%"><button class="cta" data-act="pview" data-id="${p.id}" data-c="${S.p.acoes[0].cat}">Ver como aparece no app</button><button class="cta ghost" data-act="plist">Voltar às minhas ações</button></div></div>`}
+};
+function renderPartner(){return `<div class="device web" id="dev"><div class="web-bar"><i></i><i></i><i></i><span>ponte.app/parceiro</span></div><div class="screen" id="scr">${PART[S.p.scr]()}</div>${S.toast?`<div class="toast" role="status" style="bottom:24px"><span>${S.toast.msg}</span></div>`:''}</div>`}
+function pvalidate(){const d=S.p.draft,e={};
+ if(!d.cat)e.cat='Escolha o tipo da ação.';
+ if(d.nome.trim().length<3)e.nome='Dê um nome para a ação.';
+ if(!d.bairro)e.bairro='Escolha o bairro.';
+ if(d.rua.trim().length<3)e.rua='Informe o endereço ou um ponto de referência.';
+ if(!d.dias.length)e.dias='Marque pelo menos um dia.';
+ if(!d.ini||!d.fim)e.hora='Informe o horário de começo e de fim.';else if(d.fim<=d.ini)e.hora='O horário de fim precisa ser depois do começo.';
+ S.p.errs=e;return !Object.keys(e).length}
+
+/* ---------- painel lateral ---------- */
+function side(){
+ if(S.mode==='partner')return `<div class="box"><span class="tag">Parceiro · ONG, igreja, empresa ou prefeitura</span><h2>Fluxo para testar</h2>
+  <ul><li><b>Fluxo 4:</b> Cadastrar nova ação → tipo, nome, local, dias e horário → Revisar → Publicar → Ver como aparece no app</li></ul></div>
+  <div class="box"><h2>Por que esta área existe</h2><ul><li>É daqui que vêm os pontos de comida, abrigo, banho e roupas que aparecem no app e no totem</li>
+   <li>Quem organiza a ação cadastra em menos de 2 minutos, pelo celular ou computador</li>
+   <li>A tela de revisão mostra como a pessoa vai ver a ação antes de publicar</li>
+   <li>A ação pode ser pausada quando acaba, para ninguém ir até lá à toa</li></ul></div>
+  <p class="note" style="text-align:left">Protótipo funcional. Organização, vagas, locais e telefones são fictícios.<br>Kauã Victor Oliveira de Sousa · Caio Guilherme dos Santos Silva</p>`;
+ const app=S.mode==='app';
+ return `<div class="box"><span class="tag">${app?'Aplicativo · pessoa com celular':'Totem · pessoa sem celular'}</span><h2>${app?'Fluxos para testar':'Fluxo para testar'}</h2>
+  ${app?`<ul><li><b>Fluxo 1:</b> Quero mudar de vida → Vagas → filtrar → escolher → Candidatar-me</li><li><b>Fluxo 2:</b> Preciso agora → Comida → tocar no mapa → Como chegar</li></ul>`:
+  `<ul><li><b>Fluxo 3:</b> Iniciar atendimento → nome ou apelido → Documentos → RG (2ª via) → dia e hora → Confirmar → Imprimir</li></ul>`}</div>
+  <div class="box"><h2>O que mudou desde a baixa fidelidade</h2><ul>
+  ${app?`<li>Botões <b>A+</b> (letra maior) e <b>Ouvir</b> (lê a tela em voz alta) em todas as telas</li>
+   <li>Currículo em 3 perguntas, pedido só na primeira candidatura</li>
+   <li>Menu fixo com <b>Minhas coisas</b> para acompanhar candidaturas e lembretes</li>
+   <li>Mapa com opção de <b>lista</b> e filtro <b>só abertos agora</b></li>
+   <li>Aviso quando o filtro não acha vagas, com botão para limpar</li>`:
+  `<li>Barra de progresso mostra em que passo o atendimento está</li>
+   <li>Teclado grande na tela e opção “Não tenho CPF” mais clara</li>
+   <li>Dias lotados aparecem bloqueados no calendário</li>
+   <li>Nova tela <b>Confira antes de confirmar</b>, com o que levar no dia</li>
+   <li>Botão <b>Sair</b> para encerrar o atendimento a qualquer momento</li>`}
+  </ul></div><p class="note" style="text-align:left">Protótipo funcional. Vagas, locais e telefones são fictícios.<br>Kauã Victor Oliveira de Sousa · Caio Guilherme dos Santos Silva</p>`;
+}
+
+/* ---------- render e eventos ---------- */
+function render(resetScroll){
+ const keep=document.activeElement&&document.activeElement.id;const pos=keep&&document.activeElement.selectionStart;
+ const prev=document.getElementById('scr');const st=prev&&!resetScroll?prev.scrollTop:0;
+ document.documentElement.style.setProperty('--fs',S.fs);
+ document.getElementById('device-wrap').innerHTML=S.mode==='app'?renderApp():S.mode==='kiosk'?renderKiosk():renderPartner();
+ document.getElementById('side').innerHTML=side();
+ document.getElementById('mode-app').setAttribute('aria-pressed',S.mode==='app');
+ document.getElementById('mode-kiosk').setAttribute('aria-pressed',S.mode==='kiosk');
+ document.getElementById('mode-partner').setAttribute('aria-pressed',S.mode==='partner');
+ const s=document.getElementById('scr');if(s)s.scrollTop=st;
+ if(keep){const el=document.getElementById(keep);if(el&&el.tagName==='INPUT'){el.focus();try{el.setSelectionRange(pos,pos)}catch(e){}}}
+}
+function kgo(scr){S.k.scr=scr;render(true)}
+document.addEventListener('click',e=>{
+ const b=e.target.closest('button');if(!b)return;const d=b.dataset;const a=A(),k=S.k;
+ if(b.id==='mode-app'){S.mode='app';return render(true)}
+ if(b.id==='mode-kiosk'){S.mode='kiosk';return render(true)}
+ if(b.id==='mode-partner'){S.mode='partner';return render(true)}
+ if(d.go)return go(d.go);
+ if(d.k&&!d.act)return kgo(d.k);
+ switch(d.act){
+  case 'back':return back();
+  case 'tab':return tab(d.t);
+  case 'jump':A().tab='home';A().stack=['home','mudar',d.to];return render(true);
+  case 'fs':S.fs=S.fs>=1.25?1:+(S.fs+.125).toFixed(3);toast(S.fs===1?'Letra no tamanho normal':'Letra maior');return;
+  case 'speak':return speak(d.say);
+  case 'kspeak':return speak(KSAY[k.scr]||'');
+  case 'whats':return toast('Abrindo conversa no WhatsApp (simulado)');
+  case 'toast':return toast(d.msg);
+  case 'tomode':S.mode='kiosk';return render(true);
+  case 'filt':a[d.k]=d.v;return render();
+  case 'clearf':a.filtB='Todos';a.filtA='Todas';return render();
+  case 'vaga':a.vaga=+d.id;return go('vaga');
+  case 'apply':if(!a.cv){a.after='apply';return go('cv')}
+   a.apps.push({id:a.vaga});a.stack=[a.tab,'okvaga'];return render(true);
+  case 'exp':{const x=a.cvDraft.exp;const i=x.indexOf(d.v);i<0?x.push(d.v):x.splice(i,1);return render()}
+  case 'cvsave':a.cv={...a.cvDraft,exp:[...a.cvDraft.exp]};a.apps.push({id:a.vaga});a.stack=[a.tab,'okvaga'];return render(true);
+  case 'cat':a.cat=d.k;a.view='mapa';return go('mapa');
+  case 'view':a.view=d.v;return render();
+  case 'open':a.openOnly=!a.openOnly;return render();
+  case 'ponto':a.ponto=d.id;return go('ponto');
+  case 'lembrete':{const i=a.lembretes.indexOf(a.ponto);if(i<0){a.lembretes.push(a.ponto);toast('Lembrete ativado',true)}else{a.lembretes.splice(i,1);toast('Lembrete desligado')}return}
+  case 'undo':{const i=a.lembretes.indexOf(a.ponto);if(i>=0)a.lembretes.splice(i,1);S.toast=null;return render()}
+  case 'nocpf':k.noCpf=!k.noCpf;if(k.noCpf)k.cpf='';return render();
+  case 'key':{if(d.c==='⌫')k.nome=k.nome.slice(0,-1);else k.nome+=(k.nome===''||k.nome.endsWith(' '))?d.c:d.c.toLowerCase();return render()}
+  case 'ksvc':if(d.s==='docs')return kgo('docs');if(['comida','abrigo','roupas'].includes(d.s)){k.svc=d.s;return kgo('lista')}k.svcN={vagas:'Vagas',benef:'Benefícios'}[d.s];return kgo('outro');
+  case 'kdoc':k.doc=d.id;return render();
+  case 'kposto':k.posto=d.id;return render();
+  case 'kdia':k.dia=+d.i;k.hora=null;return render();
+  case 'khora':k.hora=d.h;return render();
+  case 'kconf':k.printed=false;return kgo('fim');
+  case 'kprint':k.printed=true;render();k.printed=false;return toast('Imprimindo comprovante…');
+  case 'ksms':return k.sms.replace(/\D/g,'').length>=10?toast('SMS enviado para '+k.sms+' (simulado)'):toast('Digite um celular com DDD para enviar o SMS');
+  case 'pnew':S.p.draft=newDraft();S.p.errs={};S.p.scr='form';return render(true);
+  case 'pcat':S.p.draft.cat=d.k;delete S.p.errs.cat;return render();
+  case 'pdia':{const x=S.p.draft.dias;const i=x.indexOf(d.v);i<0?x.push(d.v):x.splice(i,1);delete S.p.errs.dias;return render()}
+  case 'pcancel':case 'plist':S.p.scr='lista';return render(true);
+  case 'prev':if(pvalidate()){S.p.scr='rev';return render(true)}render();{const f=document.querySelector('.err');if(f)f.scrollIntoView({block:'center'})}return;
+  case 'pback':S.p.scr='form';return render(true);
+  case 'ppub':{const p=addAcao(S.p.draft);S.p.last=p.id;S.p.scr='ok';return render(true)}
+  case 'poff':{const p=findP(d.id);p.off=!p.off;toast(p.off?'Ação pausada. Ela saiu do app e do totem.':'Ação publicada de novo.');return}
+  case 'pview':S.mode='app';a.tab='home';a.cat=d.c;a.view='lista';a.openOnly=false;a.stack=['home','agora','mapa'];return render(true);
+  case 'kreset':S.k={scr:'inicio',nome:'',cpf:'',noCpf:false,doc:null,posto:'p1',dia:null,hora:null,printed:false,sms:''};return render(true);
+ }
+});
+document.addEventListener('input',e=>{const t=e.target;
+ if(t.dataset.in){A().cvDraft[t.dataset.in]=t.value;render()}
+ if(t.dataset.kin){S.k[t.dataset.kin]=t.value;render()}
+ if(t.dataset.pin){S.p.draft[t.dataset.pin]=t.value}
+});
+try{if(location.hash==='#totem')S.mode='kiosk';if(location.hash==='#parceiro')S.mode='partner'}catch(e){}
+render(true);
+</script>
+
+</html>
